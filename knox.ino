@@ -98,16 +98,14 @@ void fadeIn(uint8_t wait, int color) {
 
 int listen2Knock() {
 
-  int startTime = millis(); // Reference for when this knock started.
+  int startTime = millis();
   int now = millis();
   int currentKnockNumber = 0;
 
   do { // Listen for the next knock or wait for it to timeout.
     knockSensorValue = analogRead(knockSensor);
 
-    if (knockSensorValue >= threshold) { // Here's another knock. Save the time between knocks.
-
-      //      Serial.println(knockSensorValue);
+    if (knockSensorValue >= threshold) {
       now = millis();
       knockReadings[currentKnockNumber] = now - startTime;
       currentKnockNumber ++;
@@ -116,7 +114,6 @@ int listen2Knock() {
     }
 
     now = millis();
-    // Stop listening if there are too many knocks or there is too much time between knocks.
   } while ((now - startTime < knockComplete) && (currentKnockNumber < maximumKnocks));
   return 1;
 }
@@ -124,7 +121,6 @@ int listen2Knock() {
 void playBackKnock() {
   for (int i = 0; i < maximumKnocks; i++ ) {
     if (knockReadings[i] > 100) {
-      //      Serial.println(knockReadings[i]);
       knock();
       delay(knockReadings[i]);
     }
@@ -146,10 +142,10 @@ void knock() {
 }
 
 void knockDelay() {
-  int itterations = (knockFadeTime / 20); // Wait for the peak to dissipate before listening to next one.
+  int itterations = (knockFadeTime / 20);
   for (int i = 0; i < itterations; i++) {
     delay(10);
-    analogRead(knockSensor); // This is done in an attempt to defuse the analog sensor's capacitor that will give false readings on high impedance sensors.
+    analogRead(knockSensor);
     delay(10);
   }
 }
