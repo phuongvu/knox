@@ -10,7 +10,6 @@ const int maximumKnocks = 20;
 const int threshold = 100;
 const int knockFadeTime = 150;
 
-
 int knockReadings[maximumKnocks];
 int knockSensorValue = 0;
 
@@ -23,11 +22,8 @@ void setup() {
 
 void loop() {
   int read_done = 0;
-  strip.show();
-  
-  resetKnockArray();
 
-  knockSensorValue = analogRead(knockSensor);
+  resetKnockArray();
 
   read_done = listen2Knock();
 
@@ -50,29 +46,23 @@ void loop() {
   }
 }
 
-void whiteColor() {
+void setColor(int color) {
   for (int h = 0; h < strip.numPixels(); h++) {
-    strip.setPixelColor(h, strip.Color(255, 255, 255));
-  }
-}
-
-void redColor() {
-  for (int h = 0; h < strip.numPixels(); h++) {
-    strip.setPixelColor(h, strip.Color(255, 0, 0));
+    switch (color) {
+      case 0:
+        strip.setPixelColor(h, strip.Color(255, 255, 255));
+        break;
+      case 1:
+        strip.setPixelColor(h, strip.Color(255, 0, 0));
+        break;
+    }
   }
 }
 
 void fadeOut(uint8_t wait, int color) {
   uint16_t k, h;
   for (k = 0; k < 256; k++) {
-    switch (color) {
-      case 0:
-        whiteColor();
-        break;
-      case 1:
-        redColor();
-        break;
-    }
+    setColor(color);
     strip.setBrightness(255 - k);
     strip.show();
     delay(wait);
@@ -82,14 +72,7 @@ void fadeOut(uint8_t wait, int color) {
 void fadeIn(uint8_t wait, int color) {
   uint16_t i, j;
   for (j = 0; j < 256; j++) {
-    switch (color) {
-      case 0:
-        whiteColor();
-        break;
-      case 1:
-        redColor();
-        break;
-    }
+    setColor(color);
     strip.setBrightness(j);
     strip.show();
     delay(wait);
@@ -102,7 +85,7 @@ int listen2Knock() {
   int now = millis();
   int currentKnockNumber = 0;
 
-  do { // Listen for the next knock or wait for it to timeout.
+  do {
     knockSensorValue = analogRead(knockSensor);
 
     if (knockSensorValue >= threshold) {
@@ -114,7 +97,9 @@ int listen2Knock() {
     }
 
     now = millis();
-  } while ((now - startTime < knockComplete) && (currentKnockNumber < maximumKnocks));
+  } 
+  while ((now - startTime < knockComplete) && (currentKnockNumber < maximumKnocks));
+  
   return 1;
 }
 
@@ -149,4 +134,5 @@ void knockDelay() {
     delay(10);
   }
 }
+
 
