@@ -22,6 +22,8 @@ void setup() {
 
 void loop() {
   int read_done = 0;
+//Test this thing out
+
 
   resetKnockArray();
 
